@@ -1,8 +1,5 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-
-import { AvatarButtonPickerContainer } from "./AvatarButtonPickerContainer";
-import { AvatarPartPagination } from "./AvatarPartPagination";
 import { AvatarPart } from "./AvatarPart";
 
 type Props = {
@@ -26,113 +23,49 @@ export const AvatarPartModal = ({
   onPartSelected,
   onClose,
 }: Props) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
-  const totalPages = Math.ceil(qty / itemsPerPage);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const itemsToDisplay = [...Array(itemsPerPage)].map((_, i) => startIndex + i);
-  const isPaginationVisible = totalPages > 1;
-
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
-        onClose={() => {
-          onClose();
-          // reset page
-          setCurrentPage(1);
-        }}
+        onClose={onClose}
       >
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
-        </Transition.Child>
+        <div className="fixed inset-0" onClick={onClose} />
 
-        <div className="fixed inset-0 overflow-y-auto overflow-x-hidden">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
+        <div className="fixed inset-0 overflow-y-auto pointer-events-none">
+          <div className="flex items-center justify-center">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
+              enterFrom="opacity-0 translate-y-4"
+              enterTo="opacity-100 translate-y-0"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-4"
             >
-              <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-3xl bg-white p-8 text-center align-middle shadow-xl transition-all">
-                <Dialog.Title
-                  as="h3"
-                  className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6"
-                >
-                  {title}
-                </Dialog.Title>
-
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-600">
-                    Sélectionnez un style pour personnaliser votre avatar
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    {qty} variations disponibles
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-4 md:grid-cols-6 gap-4 py-8">
-                  {itemsToDisplay.map((index) => {
-                    if (index >= qty) return null;
+              <Dialog.Panel className="transform overflow-hidden rounded-full bg-gray-100 p-2 shadow-lg pointer-events-auto absolute top-[400px]">
+                <div className="flex items-center space-x-2 overflow-x-auto max-w-2xl px-2">
+                  {[...Array(qty)].map((_, index) => {
                     const path = `${src}${(index + 1).toString().padStart(2, "0")}`;
-                    const hasSelectedPart = activePart === path;
+                    const isSelected = activePart === path;
                     return (
-                      <AvatarButtonPickerContainer
+                      <button
                         key={path}
-                        className={`group relative p-4 rounded-2xl transition-all duration-300 hover:bg-gray-50 ${
-                          hasSelectedPart ? "bg-blue-50" : ""
-                        }`}
                         onClick={() => {
                           onPartSelected(part, path);
                           onClose();
                         }}
+                        className={`flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center transition-all duration-200 hover:scale-105 ${
+                          isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                        }`}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                        
-                        <div className="relative flex items-center justify-center h-24 w-full">
-                          <div className="transform transition-transform duration-300 group-hover:scale-110">
-                            <AvatarPart path={path} />
-                          </div>
+                        <div className="w-8 h-8">
+                          <AvatarPart path={path} />
                         </div>
-
-                        {hasSelectedPart && (
-                          <div className="absolute top-2 right-2 w-2 h-2">
-                            <div className="absolute w-full h-full bg-blue-500 rounded-full animate-ping" />
-                            <div className="absolute w-full h-full bg-blue-500 rounded-full" />
-                          </div>
-                        )}
-                      </AvatarButtonPickerContainer>
+                      </button>
                     );
                   })}
                 </div>
-
-                {isPaginationVisible && (
-                  <div className="mt-8 pt-6 border-t border-gray-100">
-                    <AvatarPartPagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={handlePageChange}
-                    />
-                  </div>
-                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>

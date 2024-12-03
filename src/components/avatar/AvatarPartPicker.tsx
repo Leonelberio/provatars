@@ -12,6 +12,7 @@ type Props = {
   onDirectOutfitSelect?: () => void;
   onDirectFacialHairSelect?: () => void;
   onDirectAccessoriesSelect?: () => void;
+  onDirectBackgroundSelect?: () => void;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const AvatarPartPicker = ({ 
@@ -24,6 +25,7 @@ export const AvatarPartPicker = ({
   onDirectOutfitSelect,
   onDirectFacialHairSelect,
   onDirectAccessoriesSelect,
+  onDirectBackgroundSelect,
   onClick,
   ...rest 
 }: Props) => {
@@ -42,6 +44,8 @@ export const AvatarPartPicker = ({
       onDirectFacialHairSelect();
     } else if (onDirectAccessoriesSelect) {
       onDirectAccessoriesSelect();
+    } else if (onDirectBackgroundSelect) {
+      onDirectBackgroundSelect();
     } else if (onClick) {
       onClick(e);
     }

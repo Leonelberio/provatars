@@ -79,6 +79,7 @@ type UseAvatarValues = {
   handleDirectOutfitSelection: () => void;
   handleDirectFacialHairSelection: () => void;
   handleDirectAccessoriesSelection: () => void;
+  handleDirectBackgroundSelection: () => void;
 };
 
 type UseAvatarType = {
@@ -521,6 +522,18 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     playClickSound();
   }, [avatar.accessories.src, playClickSound]);
 
+  const handleDirectBackgroundSelection = useCallback(() => {
+    const currentIndex = backgrounds.indexOf(avatar.bg);
+    const nextIndex = currentIndex >= backgrounds.length - 1 ? 0 : currentIndex + 1;
+    const nextBackground = backgrounds[nextIndex];
+    
+    setAvatar((prev) => ({
+      ...prev,
+      bg: nextBackground
+    }));
+    playClickSound();
+  }, [avatar.bg, playClickSound]);
+
   return {
     avatar,
     avatarPartsPickers: filteredAvatarPartsPickers,
@@ -559,5 +572,6 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     handleDirectOutfitSelection,
     handleDirectFacialHairSelection,
     handleDirectAccessoriesSelection,
+    handleDirectBackgroundSelection,
   };
 };

@@ -66,6 +66,7 @@ function App() {
     handleDirectOutfitSelection,
     handleDirectFacialHairSelection,
     handleDirectAccessoriesSelection,
+    handleDirectBackgroundSelection,
   } = useAvatar({ soundEnabled });
 
   useEffect(() => {
@@ -152,15 +153,15 @@ function App() {
                               path={picker.path}
                               onDirectAccessoriesSelect={handleDirectAccessoriesSelection}
                             />
-                          ) : picker.part !== "bg" ? (
+                          ) : picker.part === "bg" ? (
+                            <AvatarBackgroundPicker
+                              color={avatar.bg}
+                              onClick={handleDirectBackgroundSelection}
+                            />
+                          ) : (
                             <AvatarPartPicker
                               path={picker.path}
                               onClick={() => openAvatarModalPicker(picker)}
-                            />
-                          ) : (
-                            <AvatarBackgroundPicker
-                              color={avatar.bg}
-                              onClick={openAvatarBackgroundModal}
                             />
                           )}
                           {picker.isModal && (
@@ -180,9 +181,9 @@ function App() {
                                   ? handleDirectFacialHairSelection
                                   : picker.part === "accessories"
                                   ? handleDirectAccessoriesSelection
-                                  : picker.part !== "bg"
-                                  ? () => openAvatarModalPicker(picker)
-                                  : openAvatarBackgroundModal
+                                  : picker.part === "bg"
+                                  ? handleDirectBackgroundSelection
+                                  : () => openAvatarModalPicker(picker)
                               }
                             />
                           )}
