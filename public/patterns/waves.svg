@@ -1,0 +1,5 @@
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+  <path d="M 0 10 Q 5 5, 10 10 T 20 10" stroke="currentColor" fill="none" stroke-width="0.5"/>
+  <path d="M 0 15 Q 5 10, 10 15 T 20 15" stroke="currentColor" fill="none" stroke-width="0.5"/>
+  <path d="M 0 5 Q 5 0, 10 5 T 20 5" stroke="currentColor" fill="none" stroke-width="0.5"/>
+</svg> 

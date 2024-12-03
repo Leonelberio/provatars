@@ -1,0 +1,7 @@
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+  <rect width="20" height="20" fill="white"/>
+  <pattern id="weave" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <path d="M 0 0 L 0 4" stroke="black" stroke-width="2"/>
+  </pattern>
+  <rect width="20" height="20" fill="url(#weave)"/>
+</svg> 

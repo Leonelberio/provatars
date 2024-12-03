@@ -72,54 +72,66 @@ export const AvatarPartModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-3xl bg-white p-8 text-center align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6"
                 >
                   {title}
                 </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm">
-                    Click any to select and close this window
+
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600">
+                    Sélectionnez un style pour personnaliser votre avatar
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    {qty} variations disponibles
                   </p>
                 </div>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    Parts available: {qty}
-                  </p>
-                </div>
-                <div className="grid grid-cols-3 gap-10 md:grid-cols-4 md:gap-4 py-4 -mx-2 md:-mx-4 px-4 justify-items-center items-center">
+
+                <div className="grid grid-cols-4 md:grid-cols-6 gap-4 py-8">
                   {itemsToDisplay.map((index) => {
                     if (index >= qty) return null;
-                    const path = `${src}${(index + 1)
-                      .toString()
-                      .padStart(2, "0")}`;
+                    const path = `${src}${(index + 1).toString().padStart(2, "0")}`;
                     const hasSelectedPart = activePart === path;
                     return (
                       <AvatarButtonPickerContainer
                         key={path}
-                        className={`h-24 w-24 p-10 border-2 ${
-                          hasSelectedPart ? "border-blue-500" : "border-black"
-                        } rounded-xl overflow-hidden relative`}
+                        className={`group relative p-4 rounded-2xl transition-all duration-300 hover:bg-gray-50 ${
+                          hasSelectedPart ? "bg-blue-50" : ""
+                        }`}
                         onClick={() => {
                           onPartSelected(part, path);
                           onClose();
                         }}
                       >
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <AvatarPart path={path} />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                        
+                        <div className="relative flex items-center justify-center h-24 w-full">
+                          <div className="transform transition-transform duration-300 group-hover:scale-110">
+                            <AvatarPart path={path} />
+                          </div>
                         </div>
+
+                        {hasSelectedPart && (
+                          <div className="absolute top-2 right-2 w-2 h-2">
+                            <div className="absolute w-full h-full bg-blue-500 rounded-full animate-ping" />
+                            <div className="absolute w-full h-full bg-blue-500 rounded-full" />
+                          </div>
+                        )}
                       </AvatarButtonPickerContainer>
                     );
                   })}
                 </div>
+
                 {isPaginationVisible && (
-                  <AvatarPartPagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
+                  <div className="mt-8 pt-6 border-t border-gray-100">
+                    <AvatarPartPagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
                 )}
               </Dialog.Panel>
             </Transition.Child>
