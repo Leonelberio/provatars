@@ -4,15 +4,14 @@ export type Pattern = {
   preview: string;
 };
 
-export const patterns: Pattern[] = [
-  {
-    name: "Damier",
-    value: "bg-[url('/patterns/checker.svg')]",
-    preview: "repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%) 50% / 20px 20px"
-  },
-  {
-    name: "Tressé",
-    value: "bg-[url('/patterns/weave.svg')]",
-    preview: "repeating-linear-gradient(45deg, #808080 0px, #808080 2px, transparent 2px, transparent 10px)"
-  }
-]; 
+export const PATTERNS = [
+  'M10 10h100v100h-100z',  // Carré simple
+  'M30 30h60v60h-60z',     // Petit carré
+  'M10 10L110 110M110 10L10 110',  // X
+  'M60 10A50 50 0 1 1 60 110A50 50 0 1 1 60 10',  // Cercle
+];
+
+export const getNextPattern = (currentPattern: string): string => {
+  const currentIndex = PATTERNS.indexOf(currentPattern);
+  return PATTERNS[(currentIndex + 1) % PATTERNS.length];
+}; 
