@@ -1,126 +1,122 @@
 import { useLocalStorage, useMediaQuery } from "usehooks-ts";
 import { Toaster } from "react-hot-toast";
-
-import { AvatarBackgroundModal } from "./components/avatar/AvatarBackgroundModal";
-import { AvatarBackgroundPicker } from "./components/avatar/AvatarBackgroundPicker";
-import { AvatarCanvas } from "./components/avatar/AvatarCanvas";
-import { AvatarPartModal } from "./components/avatar/AvatarPartModal";
-import { AvatarPartPicker } from "./components/avatar/AvatarPartPicker";
-import { AvatarTooltip } from "./components/avatar/AvatarTooltip";
-import { AvatarDownloadOptionModal } from "./components/avatar/AvatarDownloadOptionModal";
-import { backgrounds } from "./constants/backgrounds";
-import { Footer } from "./components/Footer";
-
 import { useAvatar } from "./hooks/useAvatar";
 import { useSounds } from "./hooks/useSounds";
+import { AvatarPartPicker } from "./components/avatar/AvatarPartPicker";
+import { AvatarTooltip } from "./components/avatar/AvatarTooltip";
+import { AvatarCanvas } from "./components/avatar/AvatarCanvas";
+import { AvatarBackgroundModal } from "./components/avatar/AvatarBackgroundModal";
+import { AvatarPartModal } from "./components/avatar/AvatarPartModal";
+import { AvatarDownloadOptionModal } from "./components/avatar/AvatarDownloadOptionModal";
+import { AvatarBackgroundPicker } from "./components/avatar/AvatarBackgroundPicker";
 import { Selector } from "./components/parts/Selector";
-import { FAQs } from "./components/FAQs";
+import { Footer } from "./components/Footer";
 import { useEffect } from "react";
 import { Confetti } from "@neoconfetti/react";
+import { AvatarHairModal } from "./components/avatar/AvatarHairModal";
 
 const Title = () => <h1 className="font-bold text-3xl">Avatartion</h1>;
 
+interface AvatarPicker {
+  text: string;
+  path: string;
+  title: string;
+  part: string;
+  src: string;
+  qty: number;
+  width?: number;
+  isModal?: boolean;
+}
+
 function App() {
   const [soundEnabled, setSoundEnabled] = useLocalStorage("soundEnabled", true);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const { playPauseSound } = useSounds({ soundEnabled });
+
   const {
     avatar,
     avatarPartsPickers,
     restAvatarPartsPickers,
     isAvatarModalPickerOpen,
     isBackgroundModalOpen,
+    isDownloadOptionModalOpen,
+    isHairModalOpen,
     isShared,
     avatarModal,
     avatarCanvasRef,
-    isDownloadOptionModalOpen,
     showConfetti,
     confettiOptions,
     setAvatar,
     setIsAvatarModalPickerOpen,
     setIsBackgroundModalOpen,
     setIsDownloadOptionModalOpen,
+    setIsHairModalOpen,
     openAvatarModalPicker,
     closeAvatarModalPicker,
     openAvatarBackgroundModal,
-    openAvatarDownloadOptionModal,
+    openAvatarHairModal,
     handleDownloadAvatarPNG,
     handleDownloadAvatarSVG,
     handleRandomizeAvatar,
+    openAvatarDownloadOptionModal,
     share,
-    serialize,
   } = useAvatar({ soundEnabled });
 
   useEffect(() => {
     if (!isShared) return;
-
     const currentParams = new URLSearchParams(window.location.search);
-    if (currentParams.has("shared")) {
-      currentParams.delete("shared");
-    }
-
-    currentParams.set("avatar", serialize());
     window.history.pushState(null, "", `?${currentParams.toString()}`);
   }, [avatar, isShared]);
 
-  const { playPauseSound } = useSounds({ soundEnabled });
-
-  const isMobile = useMediaQuery("(max-width: 768px)");
-
   const toggleSound = (enabled: boolean) => {
     setSoundEnabled(enabled);
-    if (enabled) {
-      playPauseSound();
-    }
+    playPauseSound();
   };
 
-  if (Object.entries(avatar).length === 0) return null;
+  if (!avatar) return null;
 
   return (
     <>
       <div className="overflow-hidden">
         {!isMobile ? (
-          <div className="mx-auto text-center w-[750px] h-auto">
-            <div className="flex items-center justify-center pt-5 md:pt-[5vh] mb-4 md:mb-0">
-              <Title />
+          <div className="mx-auto text-center w-full min-h-screen bg-gray-50 text-gray-900 py-4 px-4">
+            {/* En-tête minimaliste */}
+            <div className="relative mb-4">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Avatartion
+              </h1>
             </div>
-            <div className="flex items-center justify-center relative">
-            {showConfetti && <Confetti {...confettiOptions} />}
-              <div className="flex items-center justify-center h-[44vh] md:h-[47vh]">
-                <AvatarCanvas {...avatar} ref={avatarCanvasRef} />
-              </div>
-              <div className="absolute -right-6">
-                <div className="flex space-x-6">
-                  <div className="flex flex-col space-y-4">
-                    {avatarPartsPickers.map((picker) => (
-                      <AvatarTooltip
-                        key={picker.path}
-                        text={picker.text}
-                        width={picker.width}
-                      >
-                        <div className="flex items-center">
-                          <AvatarPartPicker
-                            path={picker.path}
-                            onClick={() => openAvatarModalPicker(picker)}
-                          />
-                          {picker.isModal && (
-                            <Selector
-                              onSelectorClick={() =>
-                                openAvatarModalPicker(picker)
-                              }
-                            />
-                          )}
-                        </div>
-                      </AvatarTooltip>
-                    ))}
+
+            <div className="flex flex-col items-center justify-between gap-4">
+              {/* Canvas principal simplifié */}
+              <div className="relative w-full max-w-md group">
+                {showConfetti && <Confetti {...confettiOptions} />}
+                <div className="relative p-4 transition-transform duration-700 ease-out hover:scale-[1.02]">
+                  <div className="flex items-center justify-center h-[44vh] md:h-[47vh]">
+                    <AvatarCanvas {...avatar} ref={avatarCanvasRef} />
                   </div>
-                  <div className="flex flex-col space-y-4">
-                    {restAvatarPartsPickers.map((picker) => (
-                      <AvatarTooltip
-                        key={picker.path}
-                        text={picker.text}
-                        width={picker.width}
-                      >
-                        <div className="flex items-center">
-                          {picker.part !== "bg" ? (
+                </div>
+              </div>
+              
+              {/* Section des options simplifiée */}
+              <div className="w-full max-w-3xl">
+                {/* Grille des options principales */}
+                <div className="grid grid-cols-4 md:grid-cols-8 gap-1 mb-2">
+                  {[...avatarPartsPickers, ...restAvatarPartsPickers].map((picker: AvatarPicker) => (
+                    <AvatarTooltip
+                      key={picker.path}
+                      text={picker.text}
+                      width={picker.width}
+                    >
+                      <div className="group relative">
+                        <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="relative flex items-center justify-center p-3 rounded-2xl hover:bg-gray-100 transition-all duration-300 cursor-pointer">
+                          {picker.part === "hair" ? (
+                            <AvatarPartPicker
+                              path={picker.path}
+                              onClick={openAvatarHairModal}
+                            />
+                          ) : picker.part !== "bg" ? (
                             <AvatarPartPicker
                               path={picker.path}
                               onClick={() => openAvatarModalPicker(picker)}
@@ -128,94 +124,86 @@ function App() {
                           ) : (
                             <AvatarBackgroundPicker
                               color={avatar.bg}
-                              onClick={() => openAvatarBackgroundModal()}
+                              onClick={openAvatarBackgroundModal}
                             />
                           )}
                           {picker.isModal && (
                             <Selector
-                              onSelectorClick={() =>
-                                picker.part !== "bg"
-                                  ? openAvatarModalPicker(picker)
-                                  : openAvatarBackgroundModal()
+                              onSelectorClick={
+                                picker.part === "hair"
+                                  ? openAvatarHairModal
+                                  : picker.part !== "bg"
+                                  ? () => openAvatarModalPicker(picker)
+                                  : openAvatarBackgroundModal
                               }
                             />
                           )}
                         </div>
-                      </AvatarTooltip>
-                    ))}
-                  </div>
+                      </div>
+                    </AvatarTooltip>
+                  ))}
                 </div>
-              </div>
-              <div className="absolute left-24">
-                <div className="flex flex-col space-y-2 md:space-y-4">
-                  <AvatarTooltip text="Download" width={60}>
-                    <AvatarPartPicker
-                      path="base/Download"
-                      onClick={() => openAvatarDownloadOptionModal()}
-                    />
-                  </AvatarTooltip>
-                  <AvatarTooltip text="Randomize" width={60}>
-                    <AvatarPartPicker
-                      path="base/Reload"
-                      onClick={() => handleRandomizeAvatar()}
-                    />
-                  </AvatarTooltip>
-                  <AvatarTooltip text="Share" width={60}>
-                    <AvatarPartPicker
-                      path="base/Share"
-                      onClick={() => share()}
-                    />
-                  </AvatarTooltip>
-                  <AvatarTooltip text="Sound" width={60}>
-                    <AvatarPartPicker
-                      path={`base/${soundEnabled ? "SoundLoud" : "SoundOff"}`}
-                      onClick={() => toggleSound(!soundEnabled)}
-                    />
-                  </AvatarTooltip>
+
+                {/* Actions principales */}
+                <div className="flex justify-center gap-4 pt-2 border-t border-gray-200">
+                  {[
+                    { text: "Télécharger", path: "base/Download", action: openAvatarDownloadOptionModal },
+                    { text: "Aléatoire", path: "base/Reload", action: handleRandomizeAvatar },
+                    { text: "Partager", path: "base/Share", action: share },
+                    { text: "Son", path: `base/${soundEnabled ? "SoundLoud" : "SoundOff"}`, action: () => toggleSound(!soundEnabled) }
+                  ].map((item) => (
+                    <AvatarTooltip key={item.text} text={item.text} width={60}>
+                      <div className="group relative">
+                        <div className="absolute -inset-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="relative p-3 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-110">
+                          <div className="w-8 h-8 text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
+                            <AvatarPartPicker
+                              path={item.path}
+                              onClick={item.action}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </AvatarTooltip>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-center justify-center px-4 space-y-2 pb-12">
-              <FAQs />
+
+            {/* Footer simplifié */}
+            <div className="mt-4">
               <Footer />
             </div>
           </div>
         ) : (
           <div className="mx-auto text-center sm:w-3/4 md:w-1/2">
-            <div className="flex items-center justify-center pt-5 md:pt-[5vh] mb-4 md:mb-0">
+            <div className="flex items-center justify-center pt-2 md:pt-[2vh] mb-1">
               <Title />
             </div>
             <div className="flex items-center justify-center h-[44vh] md:h-[47vh]">
               <AvatarCanvas {...avatar} ref={avatarCanvasRef} />
             </div>
             <div className="flex items-center justify-center">
-            {showConfetti && <Confetti {...confettiOptions} />}
+              {showConfetti && <Confetti {...confettiOptions} />}
               <div className="flex flex-col items-center justify-center px-4 pt-6 space-y-2 overflow-x-auto">
-                <div className="flex space-x-3 md:space-x-4 ">
-                  {avatarPartsPickers.map((picker) => (
+                <div className="flex space-x-1 md:space-x-2">
+                  {avatarPartsPickers.map((picker: AvatarPicker) => (
                     <AvatarTooltip
                       key={picker.path}
                       text={picker.text}
                       width={picker.width}
                     >
                       <div className="flex items-center overflow-x-auto">
-                        {picker.part !== "bg" ? (
-                          <AvatarPartPicker
-                            path={picker.path}
-                            onClick={() => openAvatarModalPicker(picker)}
-                          />
-                        ) : (
-                          <AvatarBackgroundPicker
-                            color={avatar.bg}
-                            onClick={() => openAvatarBackgroundModal()}
-                          />
-                        )}
+                        <AvatarPartPicker
+                          path={picker.path}
+                          onClick={() => openAvatarModalPicker(picker)}
+                        />
                       </div>
                     </AvatarTooltip>
                   ))}
                 </div>
-                <div className="flex space-x-3 md:space-x-4 ">
-                  {restAvatarPartsPickers.map((picker) => (
+                <div className="flex space-x-1 md:space-x-2">
+                  {restAvatarPartsPickers.map((picker: AvatarPicker) => (
                     <AvatarTooltip
                       key={picker.path}
                       text={picker.text}
@@ -230,7 +218,7 @@ function App() {
                         ) : (
                           <AvatarBackgroundPicker
                             color={avatar.bg}
-                            onClick={() => openAvatarBackgroundModal()}
+                            onClick={openAvatarBackgroundModal}
                           />
                         )}
                       </div>
@@ -241,22 +229,25 @@ function App() {
             </div>
             <div className="flex flex-col items-center justify-center">
               <div className="flex space-x-2 md:space-x-4 pt-6">
-                <AvatarTooltip text="Download" width={60}>
+                <AvatarTooltip text="Télécharger" width={60}>
                   <AvatarPartPicker
                     path="base/Download"
-                    onClick={() => openAvatarDownloadOptionModal()}
+                    onClick={openAvatarDownloadOptionModal}
                   />
                 </AvatarTooltip>
-                <AvatarTooltip text="Randomize" width={60}>
+                <AvatarTooltip text="Aléatoire" width={60}>
                   <AvatarPartPicker
                     path="base/Reload"
-                    onClick={() => handleRandomizeAvatar()}
+                    onClick={handleRandomizeAvatar}
                   />
                 </AvatarTooltip>
-                <AvatarTooltip text="Share" width={60}>
-                  <AvatarPartPicker path="base/Share" onClick={() => share()} />
+                <AvatarTooltip text="Partager" width={60}>
+                  <AvatarPartPicker
+                    path="base/Share"
+                    onClick={share}
+                  />
                 </AvatarTooltip>
-                <AvatarTooltip text="Sound" width={60}>
+                <AvatarTooltip text="Son" width={60}>
                   <AvatarPartPicker
                     path={`base/${soundEnabled ? "SoundLoud" : "SoundOff"}`}
                     onClick={() => toggleSound(!soundEnabled)}
@@ -264,7 +255,6 @@ function App() {
                 </AvatarTooltip>
               </div>
             </div>
-            <FAQs />
             <div className="pb-24">
               <Footer />
             </div>
@@ -274,27 +264,25 @@ function App() {
       <AvatarPartModal
         {...avatarModal}
         isOpen={isAvatarModalPickerOpen}
-        onPartSelected={(part, src) => closeAvatarModalPicker(part, src)}
+        onPartSelected={closeAvatarModalPicker}
         onClose={() => setIsAvatarModalPickerOpen(false)}
       />
       <AvatarBackgroundModal
         isOpen={isBackgroundModalOpen}
-        backgrounds={backgrounds}
         activeBackground={avatar.bg}
-        onBackgroundSelected={(bg) =>
-          setAvatar((prev) => ({
-            ...prev,
-            bg,
-          }))
-        }
+        onBackgroundSelected={(bg) => setAvatar((prev) => ({ ...prev, bg }))}
         onClose={() => setIsBackgroundModalOpen(false)}
+      />
+      <AvatarHairModal
+        isOpen={isHairModalOpen}
+        activeHair={avatar.hair?.src}
+        onHairSelected={(hair) => setAvatar((prev) => ({ ...prev, hair: { src: hair } }))}
+        onClose={() => setIsHairModalOpen(false)}
       />
       <AvatarDownloadOptionModal
         isOpen={isDownloadOptionModalOpen}
         onDownloadOption={(option: "SVG" | "PNG") =>
-          option === "SVG"
-            ? handleDownloadAvatarSVG()
-            : handleDownloadAvatarPNG()
+          option === "SVG" ? handleDownloadAvatarSVG() : handleDownloadAvatarPNG()
         }
         onClose={() => setIsDownloadOptionModalOpen(false)}
       />

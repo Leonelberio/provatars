@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import html2canvas from "html2canvas";
 import { backgrounds } from "../constants/backgrounds";
 import { useSounds } from "./useSounds";
@@ -50,6 +50,7 @@ type UseAvatarValues = {
   avatarCanvasRef: React.MutableRefObject<HTMLDivElement | null>;
   isAvatarModalPickerOpen: boolean;
   isBackgroundModalOpen: boolean;
+  isHairModalOpen: boolean;
   isDownloadOptionModalOpen: boolean;
   isShared: boolean;
   showConfetti: boolean;
@@ -57,10 +58,12 @@ type UseAvatarValues = {
   setAvatar: React.Dispatch<React.SetStateAction<Avatar>>;
   setIsAvatarModalPickerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsBackgroundModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsHairModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDownloadOptionModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   openAvatarModalPicker: (avatarModal: AvatarModal) => void;
   closeAvatarModalPicker: (part: string, src: string) => void;
   openAvatarBackgroundModal: () => void;
+  openAvatarHairModal: () => void;
   openAvatarDownloadOptionModal: () => void;
   handleDownloadAvatarPNG: () => void;
   handleDownloadAvatarSVG: () => void;
@@ -192,6 +195,7 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
   });
   const [activePart, setActivePart] = useState("");
   const avatarCanvasRef = useRef<HTMLDivElement | null>(null);
+  const [isHairModalOpen, setIsHairModalOpen] = useState(false);
 
   const { playClickSound, playBoingSound } = useSounds({ soundEnabled });
 
@@ -421,6 +425,11 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     excludedAvatarPartsPickers.includes(picker.part)
   );
 
+  const openAvatarHairModal = useCallback(() => {
+    setIsHairModalOpen(true);
+    playClickSound();
+  }, [playClickSound]);
+
   return {
     avatar,
     avatarPartsPickers: filteredAvatarPartsPickers,
@@ -449,5 +458,8 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     serialize,
     deserialize: deserializeAndLoad,
     randomize,
+    isHairModalOpen,
+    setIsHairModalOpen,
+    openAvatarHairModal,
   };
 };
