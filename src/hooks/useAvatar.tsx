@@ -72,6 +72,13 @@ type UseAvatarValues = {
   serialize: () => string;
   deserialize: (serializedAvatar: string) => void;
   randomize: (overrides?: Partial<Avatar>) => void;
+  handleDirectHairSelection: () => void;
+  handleDirectFaceSelection: () => void;
+  handleDirectEyesSelection: () => void;
+  handleDirectMouthSelection: () => void;
+  handleDirectOutfitSelection: () => void;
+  handleDirectFacialHairSelection: () => void;
+  handleDirectAccessoriesSelection: () => void;
 };
 
 type UseAvatarType = {
@@ -430,6 +437,90 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     playClickSound();
   }, [playClickSound]);
 
+  const handleDirectHairSelection = useCallback(() => {
+    const currentHairNumber = parseInt(avatar.hair.src.replace("hairs/Hair", "")) || 1;
+    const nextHairNumber = currentHairNumber >= 32 ? 1 : currentHairNumber + 1;
+    const nextHairPath = `hairs/Hair${nextHairNumber.toString().padStart(2, "0")}`;
+    
+    setAvatar((prev) => ({
+      ...prev,
+      hair: { src: nextHairPath }
+    }));
+    playClickSound();
+  }, [avatar.hair.src, playClickSound]);
+
+  const handleDirectFaceSelection = useCallback(() => {
+    const currentFaceNumber = parseInt(avatar.head.src.replace("faces/Face", "")) || 1;
+    const nextFaceNumber = currentFaceNumber >= 8 ? 1 : currentFaceNumber + 1;
+    const nextFacePath = `faces/Face${nextFaceNumber.toString().padStart(2, "0")}`;
+    
+    setAvatar((prev) => ({
+      ...prev,
+      head: { src: nextFacePath }
+    }));
+    playClickSound();
+  }, [avatar.head.src, playClickSound]);
+
+  const handleDirectEyesSelection = useCallback(() => {
+    const currentEyesNumber = parseInt(avatar.eyes.src.replace("eyes/Eye", "")) || 1;
+    const nextEyesNumber = currentEyesNumber >= 6 ? 1 : currentEyesNumber + 1;
+    const nextEyesPath = `eyes/Eye${nextEyesNumber.toString().padStart(2, "0")}`;
+    
+    setAvatar((prev) => ({
+      ...prev,
+      eyes: { src: nextEyesPath }
+    }));
+    playClickSound();
+  }, [avatar.eyes.src, playClickSound]);
+
+  const handleDirectMouthSelection = useCallback(() => {
+    const currentMouthNumber = parseInt(avatar.mouth.src.replace("mouths/Mouth", "")) || 1;
+    const nextMouthNumber = currentMouthNumber >= 10 ? 1 : currentMouthNumber + 1;
+    const nextMouthPath = `mouths/Mouth${nextMouthNumber.toString().padStart(2, "0")}`;
+    
+    setAvatar((prev) => ({
+      ...prev,
+      mouth: { src: nextMouthPath }
+    }));
+    playClickSound();
+  }, [avatar.mouth.src, playClickSound]);
+
+  const handleDirectOutfitSelection = useCallback(() => {
+    const currentOutfitNumber = parseInt(avatar.outfit.src.replace("outfits/Outfit", "")) || 1;
+    const nextOutfitNumber = currentOutfitNumber >= 25 ? 1 : currentOutfitNumber + 1;
+    const nextOutfitPath = `outfits/Outfit${nextOutfitNumber.toString().padStart(2, "0")}`;
+    
+    setAvatar((prev) => ({
+      ...prev,
+      outfit: { src: nextOutfitPath }
+    }));
+    playClickSound();
+  }, [avatar.outfit.src, playClickSound]);
+
+  const handleDirectFacialHairSelection = useCallback(() => {
+    const currentFacialHairNumber = parseInt(avatar.facialHair.src.replace("facial-hair/FacialHair", "")) || 1;
+    const nextFacialHairNumber = currentFacialHairNumber >= 8 ? 1 : currentFacialHairNumber + 1;
+    const nextFacialHairPath = `facial-hair/FacialHair${nextFacialHairNumber.toString().padStart(2, "0")}`;
+    
+    setAvatar((prev) => ({
+      ...prev,
+      facialHair: { src: nextFacialHairPath }
+    }));
+    playClickSound();
+  }, [avatar.facialHair.src, playClickSound]);
+
+  const handleDirectAccessoriesSelection = useCallback(() => {
+    const currentAccessoriesNumber = parseInt(avatar.accessories.src.replace("accessories/Accessory", "")) || 1;
+    const nextAccessoriesNumber = currentAccessoriesNumber >= 10 ? 1 : currentAccessoriesNumber + 1;
+    const nextAccessoriesPath = `accessories/Accessory${nextAccessoriesNumber.toString().padStart(2, "0")}`;
+    
+    setAvatar((prev) => ({
+      ...prev,
+      accessories: { src: nextAccessoriesPath }
+    }));
+    playClickSound();
+  }, [avatar.accessories.src, playClickSound]);
+
   return {
     avatar,
     avatarPartsPickers: filteredAvatarPartsPickers,
@@ -461,5 +552,12 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     isHairModalOpen,
     setIsHairModalOpen,
     openAvatarHairModal,
+    handleDirectHairSelection,
+    handleDirectFaceSelection,
+    handleDirectEyesSelection,
+    handleDirectMouthSelection,
+    handleDirectOutfitSelection,
+    handleDirectFacialHairSelection,
+    handleDirectAccessoriesSelection,
   };
 };

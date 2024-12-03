@@ -13,7 +13,6 @@ import { Selector } from "./components/parts/Selector";
 import { Footer } from "./components/Footer";
 import { useEffect } from "react";
 import { Confetti } from "@neoconfetti/react";
-import { AvatarHairModal } from "./components/avatar/AvatarHairModal";
 
 const Title = () => <h1 className="font-bold text-3xl">Avatartion</h1>;
 
@@ -60,6 +59,13 @@ function App() {
     handleRandomizeAvatar,
     openAvatarDownloadOptionModal,
     share,
+    handleDirectHairSelection,
+    handleDirectFaceSelection,
+    handleDirectEyesSelection,
+    handleDirectMouthSelection,
+    handleDirectOutfitSelection,
+    handleDirectFacialHairSelection,
+    handleDirectAccessoriesSelection,
   } = useAvatar({ soundEnabled });
 
   useEffect(() => {
@@ -114,7 +120,37 @@ function App() {
                           {picker.part === "hair" ? (
                             <AvatarPartPicker
                               path={picker.path}
-                              onClick={openAvatarHairModal}
+                              onDirectHairSelect={handleDirectHairSelection}
+                            />
+                          ) : picker.part === "head" ? (
+                            <AvatarPartPicker
+                              path={picker.path}
+                              onDirectFaceSelect={handleDirectFaceSelection}
+                            />
+                          ) : picker.part === "eyes" ? (
+                            <AvatarPartPicker
+                              path={picker.path}
+                              onDirectEyesSelect={handleDirectEyesSelection}
+                            />
+                          ) : picker.part === "mouth" ? (
+                            <AvatarPartPicker
+                              path={picker.path}
+                              onDirectMouthSelect={handleDirectMouthSelection}
+                            />
+                          ) : picker.part === "outfit" ? (
+                            <AvatarPartPicker
+                              path={picker.path}
+                              onDirectOutfitSelect={handleDirectOutfitSelection}
+                            />
+                          ) : picker.part === "facialHair" ? (
+                            <AvatarPartPicker
+                              path={picker.path}
+                              onDirectFacialHairSelect={handleDirectFacialHairSelection}
+                            />
+                          ) : picker.part === "accessories" ? (
+                            <AvatarPartPicker
+                              path={picker.path}
+                              onDirectAccessoriesSelect={handleDirectAccessoriesSelection}
                             />
                           ) : picker.part !== "bg" ? (
                             <AvatarPartPicker
@@ -131,7 +167,19 @@ function App() {
                             <Selector
                               onSelectorClick={
                                 picker.part === "hair"
-                                  ? openAvatarHairModal
+                                  ? handleDirectHairSelection
+                                  : picker.part === "head"
+                                  ? handleDirectFaceSelection
+                                  : picker.part === "eyes"
+                                  ? handleDirectEyesSelection
+                                  : picker.part === "mouth"
+                                  ? handleDirectMouthSelection
+                                  : picker.part === "outfit"
+                                  ? handleDirectOutfitSelection
+                                  : picker.part === "facialHair"
+                                  ? handleDirectFacialHairSelection
+                                  : picker.part === "accessories"
+                                  ? handleDirectAccessoriesSelection
                                   : picker.part !== "bg"
                                   ? () => openAvatarModalPicker(picker)
                                   : openAvatarBackgroundModal
@@ -272,12 +320,6 @@ function App() {
         activeBackground={avatar.bg}
         onBackgroundSelected={(bg) => setAvatar((prev) => ({ ...prev, bg }))}
         onClose={() => setIsBackgroundModalOpen(false)}
-      />
-      <AvatarHairModal
-        isOpen={isHairModalOpen}
-        activeHair={avatar.hair?.src}
-        onHairSelected={(hair) => setAvatar((prev) => ({ ...prev, hair: { src: hair } }))}
-        onClose={() => setIsHairModalOpen(false)}
       />
       <AvatarDownloadOptionModal
         isOpen={isDownloadOptionModalOpen}
