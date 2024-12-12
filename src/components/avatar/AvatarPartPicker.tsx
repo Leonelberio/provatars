@@ -1,10 +1,11 @@
 import React from 'react';
 import { AvatarPart } from './AvatarPart';
-import { AvatarButtonPickerContainer } from './AvatarButtonPickerContainer';
+import { ModernButtonContainer } from './ModernButtonContainer';
 
 type Props = {
   path: string;
   withBorder?: boolean;
+  isActive?: boolean;
   onDirectHairSelect?: () => void;
   onDirectFaceSelect?: () => void;
   onDirectEyesSelect?: () => void;
@@ -16,7 +17,8 @@ type Props = {
 
 export const AvatarPartPicker = ({ 
   path, 
-  withBorder = true, 
+  withBorder = true,
+  isActive = false,
   onDirectHairSelect,
   onDirectFaceSelect,
   onDirectEyesSelect,
@@ -48,14 +50,15 @@ export const AvatarPartPicker = ({
   };
 
   return (
-    <AvatarButtonPickerContainer 
-      withBorder={withBorder} 
+    <ModernButtonContainer 
+      withBorder={withBorder}
+      isActive={isActive}
       onClick={handleClick}
       {...rest}
     >
       <div className="absolute inset-0 flex items-center justify-center">
         <AvatarPart path={path} />
       </div>
-    </AvatarButtonPickerContainer>
+    </ModernButtonContainer>
   );
 };

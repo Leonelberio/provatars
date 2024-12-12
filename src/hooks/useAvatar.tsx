@@ -1,10 +1,12 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import html2canvas from "html2canvas";
 import { backgrounds } from "../constants/backgrounds";
 import { useSounds } from "./useSounds";
 import toast from "react-hot-toast";
 import { useConfetti } from "./useConfetti";
 import { ConfettiProps } from "@neoconfetti/react";
+import { useAvatarSkinTone } from './useAvatarSkinTone';
+import { useSearchParams } from "react-router-dom";
 
 type AvatarPart = {
   src: string;
@@ -12,6 +14,7 @@ type AvatarPart = {
 
 type Avatar = {
   bg: string;
+  skinTone: string;
   body: AvatarPart;
   hair: AvatarPart;
   eyes: AvatarPart;
@@ -79,6 +82,11 @@ type UseAvatarValues = {
   handleDirectOutfitSelection: () => void;
   handleDirectFacialHairSelection: () => void;
   handleDirectAccessoriesSelection: () => void;
+  skinTone: string;
+  isSkinToneModalOpen: boolean;
+  openSkinToneModal: () => void;
+  closeSkinToneModal: () => void;
+  changeSkinTone: (newSkinTone: string) => void;
 };
 
 type UseAvatarType = {
@@ -101,6 +109,7 @@ const getRandomAvatar = (overrides?: Partial<Avatar>) => {
     outfit: { src: `${randomPart("outfits/Outfit", 25)}` },
     accessories: { src: `${randomPart("accessories/Accessory", 10)}` },
     facialHair: { src: `${randomPart("facial-hair/FacialHair", 8)}` },
+    skinTone: "fair",
     ...overrides,
   };
 };
@@ -116,6 +125,7 @@ const serializeAvatar = (avatar: Avatar): string => {
     outfit: avatar.outfit.src.replace("outfits/Outfit", ""),
     accessories: avatar.accessories.src.replace("accessories/Accessory", ""),
     facialHair: avatar.facialHair.src.replace("facial-hair/FacialHair", ""),
+    skinTone: avatar.skinTone,
   };
 
   const buffer = new Uint8Array(9);
@@ -160,6 +170,7 @@ const deserializeAvatar = (serializedAvatar: string): Avatar | null => {
       outfit: { src: `outfits/Outfit${parts[5]}` },
       accessories: { src: `accessories/Accessory${parts[6]}` },
       facialHair: { src: `facial-hair/FacialHair${parts[7]}` },
+      skinTone: parts[8],
     };
   } catch (error) {
     return null;
@@ -207,6 +218,14 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
   const { playClickSound, playBoingSound } = useSounds({ soundEnabled });
 
   const { showConfetti, confettiOptions, confettiToggle } = useConfetti();
+
+  const {
+    skinTone,
+    isModalOpen: isSkinToneModalOpen,
+    openModal: openSkinToneModal,
+    closeModal: closeSkinToneModal,
+    changeSkinTone
+  } = useAvatarSkinTone();
 
   const randomize = (overrides?: Partial<Avatar>) => {
     setAvatar(getRandomAvatar(overrides));
@@ -522,12 +541,15 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
   }, [avatar.accessories.src, playClickSound]);
 
   return {
-    avatar,
-    avatarPartsPickers: filteredAvatarPartsPickers,
-    restAvatarPartsPickers,
-    isAvatarModalPickerOpen,
-    isBackgroundModalOpen,
-    isDownloadOptionModalOpen,
+    avatar: {
+      ...avatar,
+      skinTone
+    },
+    skinTone,
+    isSkinToneModalOpen,
+    openSkinToneModal,
+    closeSkinToneModal,
+    changeSkinTone,
     avatarModal,
     activePart,
     avatarCanvasRef,

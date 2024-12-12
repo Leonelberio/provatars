@@ -11,10 +11,17 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
+    "@neoconfetti/react": "^1.0.0",
+    "@react-hook/media-query": "^1.1.1",
+    "@svgdotjs/svg.js": "^3.2.4",
     "framer-motion": "^10.16.4",
+    "html2canvas": "^1.4.1",
     "react": "^18.2.0",
     "react-colorful": "^5.6.1",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
+    "use-sound": "^4.0.3",
+    "usehooks-ts": "^3.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.9.0",

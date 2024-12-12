@@ -5,3 +5,4 @@ export { default as Reload } from './Reload';
 export { default as SoundLoud } from './SoundLoud';
 export { default as SoundOff } from './SoundOff';
 export { default as Share } from './Share';
+export { default as SkinTone } from './SkinTone';
